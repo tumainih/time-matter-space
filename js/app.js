@@ -20,6 +20,50 @@
   const barClock = document.getElementById('barClock');
   const syncIndicator = document.getElementById('syncIndicator');
   const syncStatus = document.getElementById('firebaseSyncStatus');
+  const installAppBtn = document.getElementById('installAppBtn');
+  let pendingInstallPrompt = null;
+
+  function appIsInstalled(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+  }
+  function updateInstallButton(){
+    if(appIsInstalled()){
+      installAppBtn.textContent='App installed';
+      installAppBtn.disabled=true;
+      installAppBtn.title='This app is already installed.';
+    }else if(pendingInstallPrompt){
+      installAppBtn.textContent='Install app';
+      installAppBtn.disabled=false;
+      installAppBtn.title='Install Time · Matter · Space on this device.';
+    }else{
+      installAppBtn.textContent='How to install';
+      installAppBtn.disabled=false;
+      installAppBtn.title='Show browser-specific installation instructions.';
+    }
+  }
+  window.addEventListener('beforeinstallprompt',event=>{
+    event.preventDefault();
+    pendingInstallPrompt=event;
+    updateInstallButton();
+  });
+  window.addEventListener('appinstalled',()=>{
+    pendingInstallPrompt=null;
+    updateInstallButton();
+  });
+  installAppBtn.onclick=async()=>{
+    if(pendingInstallPrompt){
+      pendingInstallPrompt.prompt();
+      await pendingInstallPrompt.userChoice;
+      pendingInstallPrompt=null;
+      updateInstallButton();
+      return;
+    }
+    const isAppleTouch=/iphone|ipad|ipod/i.test(navigator.userAgent);
+    alert(isAppleTouch
+      ? 'To install: open this page in Safari, tap Share, then choose “Add to Home Screen”. Open the installed app once online so it can cache files for offline use.'
+      : 'To install: use your browser menu and choose “Install app” or “Add to Home Screen”. Open the installed app once online so it can cache files for offline use.');
+  };
+  updateInstallButton();
 
   function showSyncStatus(info){
     const labels={
