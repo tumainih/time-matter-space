@@ -30,6 +30,13 @@ netlify deploy --prod
 Open the deployed URL once on your phone, then "Add to Home Screen" — from
 then on it launches like a native app, offline.
 
+**Install for offline use:** open the HTTPS site while online, then choose
+**Settings → Install app** (or use the browser's Install app / Add to Home
+Screen menu). On iPhone or iPad, open the link in Safari, tap **Share → Add to
+Home Screen**. Launch the installed app once while online so the service worker
+can cache the app shell; after that, its core Time, Matter, and Space features
+continue working without a network connection. Cloud sync itself needs internet.
+
 ## Structure
 
 ```

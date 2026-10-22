@@ -1,5 +1,5 @@
 /* Offline-first cache. Bump CACHE on any file change to force refresh. */
-const CACHE = 'tms-v2-cloud-sync';
+const CACHE = 'tms-v3-installable';
 const ASSETS = [
   './',
   './index.html',
