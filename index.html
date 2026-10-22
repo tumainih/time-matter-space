@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Time · Matter · Space</title>
+<meta name="description" content="An offline instrument for planning, recording and evaluating life across nested cycles of time, matter and space.">
+<meta name="theme-color" content="#F6F5F2">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.svg">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============ TOP INSTRUMENT BAR ============ -->
+  <header class="bar">
+    <div class="bar-mark">
+      <span class="mark-ring"></span>
+      <span class="bar-title">TIME <span class="dot">·</span> MATTER <span class="dot">·</span> SPACE</span>
+    </div>
+    <div class="bar-clock" id="barClock">--:--:--.---</div>
+    <button class="sync-indicator" id="syncIndicator" type="button" title="Open cloud sync settings">Local only</button>
+    <button class="icon-btn" id="settingsBtn" title="Settings" aria-label="Settings">⚙</button>
+  </header>
+
+  <!-- ============ SPIRIT VERSE BANNER ============ -->
+  <div id="verseBanner"></div>
+
+  <!-- ============ BREADCRUMB / DRILL PATH ============ -->
+  <nav class="crumb" id="crumbBar" aria-label="Cycle breadcrumb"></nav>
+
+  <!-- ============ MAIN VIEW ============ -->
+  <main id="mainView"></main>
+
+  <!-- ============ BOTTOM TAB NAV ============ -->
+  <nav class="tabbar" role="tablist" aria-label="Primary sections">
+    <button class="tab active" data-tab="time" role="tab" aria-selected="true">
+      <span class="tab-glyph">◔</span><span>Time</span>
+    </button>
+    <button class="tab" data-tab="matter" role="tab" aria-selected="false">
+      <span class="tab-glyph">◆</span><span>Matter</span>
+    </button>
+    <button class="tab" data-tab="space" role="tab" aria-selected="false">
+      <span class="tab-glyph">⬡</span><span>Space</span>
+    </button>
+    <button class="tab" data-tab="log" role="tab" aria-selected="false">
+      <span class="tab-glyph">≣</span><span>Log</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ============ SETTINGS DRAWER ============ -->
+<div class="drawer" id="settingsDrawer" aria-hidden="true">
+  <div class="drawer-panel">
+    <div class="drawer-head">
+      <h2>Settings</h2>
+      <button class="icon-btn" id="closeSettings" aria-label="Close">✕</button>
+    </div>
+    <div class="drawer-body">
+      <section>
+        <h3>Cycle anchors</h3>
+        <p class="hint">The 4‑year and 7‑year cycles need a reference point. Adjust these to line up with what matters to you — birth year, calling, a covenant date.</p>
+        <label>4‑year cycle end-year alignment
+          <select id="fourYearMode">
+            <option value="calendar">Calendar (…2021–2024, 2025–2028…)</option>
+            <option value="custom">Custom anchor</option>
+          </select>
+        </label>
+        <label id="fourYearAnchorWrap" style="display:none">Anchor year (cycle end)
+          <input type="number" id="fourYearAnchor" value="2024">
+        </label>
+        <label>7‑year cycle start
+          <input type="number" id="sevenYearAnchor" value="2004">
+        </label>
+      </section>
+      <section>
+        <h3>Data</h3>
+        <p class="hint">Saved on this device first; optional Firebase sync can copy supported records to your private online database. Back it up often.</p>
+        <div class="btn-row">
+          <button class="btn" id="exportBtn">Export backup (.json)</button>
+          <button class="btn" id="importBtn">Import backup</button>
+          <input type="file" id="importFile" accept="application/json" style="display:none">
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-danger" id="wipeBtn">Erase all data</button>
+        </div>
+      </section>
+      <section>
+        <h3>Online database · Firebase</h3>
+        <p class="hint">Plan, Record and Evaluate notes stay saved separately for each time unit. The app saves on this device first; sign in to sync notes and other records to your private Firebase database and other signed-in devices. Firebase setup is required once.</p>
+        <label>Web API key
+          <input type="text" id="firebaseApiKey" autocomplete="off" placeholder="Firebase web app API key">
+        </label>
+        <label>Auth domain
+          <input type="text" id="firebaseAuthDomain" autocomplete="off" placeholder="your-project.firebaseapp.com">
+        </label>
+        <label>Project ID
+          <input type="text" id="firebaseProjectId" autocomplete="off" placeholder="your-project-id">
+        </label>
+        <label>Web app ID
+          <input type="text" id="firebaseAppId" autocomplete="off" placeholder="1:...:web:...">
+        </label>
+        <button class="btn" id="saveFirebaseConfig">Save Firebase settings</button>
+        <hr>
+        <label>Email
+          <input type="email" id="firebaseEmail" autocomplete="username" placeholder="you@example.com">
+        </label>
+        <label>Password
+          <input type="password" id="firebasePassword" autocomplete="current-password" placeholder="At least 6 characters">
+        </label>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="firebaseSignIn">Sign in</button>
+          <button class="btn" id="firebaseCreateAccount">Create account</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn" id="firebaseSyncNow">Sync now</button>
+          <button class="btn" id="firebaseSignOut">Sign out</button>
+        </div>
+        <p class="sync-status" id="firebaseSyncStatus" role="status" aria-live="polite">Cloud sync is not configured.</p>
+        <p class="hint">Firebase config is not a password; database security comes from Firebase Authentication and Firestore rules. Large photos/videos remain on this device and are not uploaded.</p>
+      </section>
+      <section>
+        <h3>About the mapping</h3>
+        <p class="hint">Spirit marks fall every 3 hours (3,6,9,12,15,18,21h) — the start of each quaday. Soul follows, then Body, before the next mark. Wednesday is the week's peak; the fasting month is the peak of each quarter; weeks 4–5 are the peak of the quarter's two working months; year 4 is the peak of each 7‑year cycle.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<template id="tplNoteTabs">
+  <div class="note-tabs">
+    <button class="note-tab active" data-phase="plan">Plan</button>
+    <button class="note-tab" data-phase="record">Record</button>
+    <button class="note-tab" data-phase="evaluate">Evaluate</button>
+  </div>
+  <textarea class="note-area" data-phase="plan" placeholder="Plan this unit before it begins…"></textarea>
+</template>
+
+<script src="js/time-engine.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/cloud-sync.js"></script>
+<script src="js/verses.js"></script>
+<script src="js/matter.js"></script>
+<script src="js/space.js"></script>
+<script src="js/views.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

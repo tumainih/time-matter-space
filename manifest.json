@@ -1,0 +1,15 @@
+{
+  "name": "Time · Matter · Space",
+  "short_name": "TMS",
+  "description": "An offline instrument for planning, recording and evaluating life across nested cycles of time, matter and space.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F5F2",
+  "theme_color": "#F6F5F2",
+  "icons": [
+    { "src": "icons/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
