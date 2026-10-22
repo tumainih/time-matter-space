@@ -30,13 +30,6 @@ netlify deploy --prod
 Open the deployed URL once on your phone, then "Add to Home Screen" — from
 then on it launches like a native app, offline.
 
-**Install for offline use:** open the HTTPS site while online, then choose
-**Settings → Install app** (or use the browser's Install app / Add to Home
-Screen menu). On iPhone or iPad, open the link in Safari, tap **Share → Add to
-Home Screen**. Launch the installed app once while online so the service worker
-can cache the app shell; after that, its core Time, Matter, and Space features
-continue working without a network connection. Cloud sync itself needs internet.
-
 ## Structure
 
 ```
@@ -44,7 +37,6 @@ index.html          shell: top bar, breadcrumb, tab bar, settings drawer
 css/style.css        the whole design system (instrument-panel dark theme)
 js/time-engine.js    pure date math for every cycle (ms → century)
 js/storage.js        localStorage wrapper: notes, matter, vocab, places
-js/cloud-sync.js     optional Firebase Auth + Firestore sync, offline-first merge
 js/verses.js         156 KJV verses (Love/Hope/Faith) + the Spirit verse banner
 js/matter.js         the Matter tab (text/photo/video, Spirit/Soul/Body)
 js/space.js          the Space tab (geolocation + named places)
@@ -144,48 +136,15 @@ All of the above only affect *labels and grouping* — the underlying date
 math is exact, so nothing here needs to be "right" on the first try:
 adjust the two anchors in Settings any time and every card recomputes.
 
-## Firebase cloud sync (optional)
+## Data & privacy
 
-The app remains local-first: entries are saved to `localStorage` immediately,
-so planning and logging still work offline. To sync between devices, set up a
-Firebase project on the free Spark plan and use the same email/password account
-on each device:
+Everything — notes, matter entries (including photos/video as embedded
+data), named places, settings — stays in this browser's `localStorage`
+on this device. Nothing is sent anywhere. Use **Settings → Export
+backup** regularly, especially before clearing browser data or moving
+devices; **Import backup** restores it, and **Erase all data** wipes it.
 
-1. In the Firebase console, create a project and add a **Web app**. Copy its
-  `apiKey`, `authDomain`, `projectId`, and `appId` values.
-2. Under **Authentication → Sign-in method**, enable **Email/Password**.
-3. Create a **Cloud Firestore** database.
-4. In Firestore **Rules**, use the rules below and publish them. They restrict
-  records to the signed-in account that owns them:
-
-  ```text
-  rules_version = '2';
-  service cloud.firestore {
-    match /databases/{database}/documents {
-     match /users/{userId}/records/{recordId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-     }
-    }
-  }
-  ```
-
-5. Open the app, go to **Settings → Online database · Firebase**, enter the
-  four web-app values, and press **Save Firebase settings**.
-6. Choose **Create account** once, then use **Sign in** on your other devices.
-  Existing local data is merged into the cloud on first sync. Changes upload
-  when online and the app also checks for updates periodically while open.
-  **Plan, Record, and Evaluate notes are saved separately for each time unit**
-  and included in the merge, so a day’s notes remain attached to that day and
-  weekly notes remain attached to their week.
-
-Firebase web-app configuration is not a password. Never make Firestore open to
-the public; use the rules above. Firebase free-tier usage quotas apply.
-Photos/videos larger than about 700 KB are kept on the device and excluded from
-cloud sync; smaller media may sync. Keep using **Export backup** as an extra
-backup, especially before clearing browser data. Signing out does not erase
-either local or cloud records. **Erase all data** currently erases the local
-device only; it does not delete the Firebase copy.
-
-If Firebase is not configured, the app works entirely offline/local on that
-device. Local browser storage is not automatically shared across browsers or
-devices until you configure Firebase and sign in.
+Because photos/video are stored as base64 in `localStorage`, keep an eye
+on volume — browsers typically cap localStorage around 5–10MB. For heavy
+photo/video use over time, export a backup and start a fresh period, or
+keep media descriptions text-only and store the actual files elsewhere.

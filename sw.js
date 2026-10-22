@@ -1,12 +1,11 @@
 /* Offline-first cache. Bump CACHE on any file change to force refresh. */
-const CACHE = 'tms-v3-installable';
+const CACHE = 'tms-v1';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/time-engine.js',
   './js/storage.js',
-  './js/cloud-sync.js',
   './js/verses.js',
   './js/matter.js',
   './js/space.js',
@@ -35,8 +34,6 @@ self.addEventListener('activate', (event) => {
 // Cache-first for app shell, network-first fallback for anything else.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  // Do not cache Firebase/Auth responses: they can contain account-specific data.
-  if (new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
