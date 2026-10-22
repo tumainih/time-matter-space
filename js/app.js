@@ -374,7 +374,7 @@
   // ---------------- PWA / offline ----------------
   if('serviceWorker' in navigator){
     window.addEventListener('load', ()=>{
-      navigator.serviceWorker.register('sw.js?v=tms-v3-installable').catch(()=>{ /* fine if it fails, app still works online */ });
+      navigator.serviceWorker.register('sw-installable.js').catch(()=>{ /* fine if it fails, app still works online */ });
     });
   }
 
